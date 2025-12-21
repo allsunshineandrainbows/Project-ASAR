@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Rain Effect</title>
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  background: radial-gradient(circle at top, #111 0%, #000 65%);
+  overflow: hidden;
+  font-family: system-ui, sans-serif;
+}
+
+canvas {
+  display: block;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.04),
+    rgba(0,0,0,0.4)
+  );
+  pointer-events: none;
+}
+
+/* === DROPDOWN TOGGLE === */
+
+.toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 16px;
+  border-radius: 50px;
+  background: rgba(30,30,35,0.7);
+  color: #ccc;
+  border: none;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.15em;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle span {
+  transition: transform 0.35s ease;
+}
+
+.toggle.open span {
+  transform: rotate(180deg);
+}
+
+/* === SLIDING CONTROL PANEL === */
+
+.controls {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  width: 220px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(20, 20, 25, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  color: #bbb;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+
+  /* animation */
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-10px);
+  transition:
+    max-height 0.45s ease,
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.controls.open {
+  max-height: 260px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.controls label {
+  display: block;
+  margin-top: 12px;
+  opacity: 0.7;
+}
+
+.controls input {
+  width: 100%;
+  margin-top: 6px;
+}
+</style>
+</head>
+<body>
+
+<canvas id="rain"></canvas>
+<div class="overlay"></div>
+
+<button class="toggle" id="toggle">
+  CONTROL <span>▾</span>
+</button>
+
+<div class="controls" id="controls">
+  <label>RAIN AMOUNT</label>
+  <input type="range" min="100" max="1200" value="500" id="amount">
+
+  <label>WIND</label>
+  <input type="range" min="-3" max="3" step="0.1" value="-0.4" id="wind">
+
+  <label>SPEED</label>
+  <input type="range" min="1" max="15" step="0.5" value="6" id="speed">
+</div>
+
+<script>
+const canvas = document.getElementById("rain");
+const ctx = canvas.getContext("2d");
+
+let width, height, dpr;
+let drops = [];
+
+let DROP_COUNT = 500;
+let WIND = -0.4;
+let SPEED_MULT = 1;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  width = innerWidth;
+  height = innerHeight;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  canvas.style.width = width + "px";
+  canvas.style.height = height + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+class Drop {
+  constructor(z = Math.random()) {
+    this.z = z;
+    this.reset();
+  }
+
+  reset() {
+    this.x = Math.random() * width;
+    this.y = Math.random() * -height;
+    this.length = 10 + this.z * 25;
+    this.speed = (4 + this.z * 10) * SPEED_MULT;
+    this.opacity = 0.2 + this.z * 0.6;
+  }
+
+  update() {
+    this.x += WIND * this.z;
+    this.y += this.speed;
+    if (this.y > height) {
+      this.reset();
+      this.y = 0;
+    }
+  }
+
+  draw() {
+    ctx.strokeStyle = `rgba(180,200,255,${this.opacity})`;
+    ctx.lineWidth = 1 + this.z;
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x + WIND * 8, this.y + this.length);
+    ctx.stroke();
+  }
+}
+
+function init() {
+  drops = [];
+  for (let i = 0; i < DROP_COUNT; i++) {
+    drops.push(new Drop());
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, width, height);
+  for (const d of drops) {
+    d.update();
+    d.draw();
+  }
+  requestAnimationFrame(animate);
+}
+
+/* === UI LOGIC === */
+
+const toggle = document.getElementById("toggle");
+const controls = document.getElementById("controls");
+
+toggle.onclick = () => {
+  toggle.classList.toggle("open");
+  controls.classList.toggle("open");
+};
+
+document.getElementById("amount").oninput = e => {
+  DROP_COUNT = +e.target.value;
+  init();
+};
+
+document.getElementById("wind").oninput = e => {
+  WIND = +e.target.value;
+};
+
+document.getElementById("speed").oninput = e => {
+  SPEED_MULT = +e.target.value;
+  drops.forEach(d => d.reset());
+};
+
+window.onresize = () => {
+  resize();
+  init();
+};
+
+resize();
+init();
+animate();
+</script>
+
+</body>
+</html>
+
+
