@@ -1,7 +1,28 @@
 #dialogue_box {
-width: 500px;
-height: 200px;
-border: 3px solid black;
-position: relative;
-top: 360px
+    width: 1345px;
+    height: 200px;
+    border: 3px solid black;
+    position: relative;
+    top: 413px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+#dialogue_picture {
+    width: 185px;
+    height: 185px;
+    border: 3px solid black;
+    flex: 0 0 185px;
+    box-sizing: border-box;
+}
+
+#dialogue_textContainer {
+    flex: 1 1 auto;
+    height: 100%;
+    border: 3px solid black;
+    box-sizing: border-box;
+    overflow: hidden;
 }
