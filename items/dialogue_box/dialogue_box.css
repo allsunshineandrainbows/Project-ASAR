@@ -19,10 +19,26 @@
     box-sizing: border-box;
 }
 
-#dialogue_textContainer {
+#dialogue_right {
+    display: flex;
+    flex-direction: column;
     flex: 1 1 auto;
     height: 100%;
+    gap: 6px;
+    box-sizing: border-box;
+}
+
+#dialogue_characterName {
+    height: 34px;
+    line-height: 34px;
+    padding-left: 8px;
+    border: 3px solid black;
+}
+
+#dialogue_textContainer {
+    flex: 1 1 auto;
+    height: auto;
     border: 3px solid black;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: auto;
 }
