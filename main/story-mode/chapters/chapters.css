@@ -1,0 +1,21 @@
+#chapters-title {
+    font-size: 7em;
+    margin-top: 20px;
+    font-weight: bold;
+    position: relative;
+    top: 10px;
+    left: 35px;
+    -webkit-text-stroke: 1px white;
+    /* Text shadow to create an outline effect */
+    text-shadow:
+        2px 2px 0 white,
+       -2px 2px 0 white,
+        2px -2px 0 white,
+       -2px -2px 0 white,
+        0px 2px 0 white,
+        2px 0px 0 white,
+        0px -2px 0 white,
+       -2px 0px 0 white;
+       /* end of outline effect */
+}
+
