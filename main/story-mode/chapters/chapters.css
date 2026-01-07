@@ -19,3 +19,48 @@
        /* end of outline effect */
 }
 
+body {
+        font-family: 'Quantico', sans-serif;
+        background-color: black;
+}
+
+/* Rain background canvas (behind all content) */
+#rain {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -2;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.04),
+        rgba(0,0,0,0.4)
+    );
+    pointer-events: none;
+    z-index: -1;
+}
+
+#chapters-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.chapter-button {
+    font-family: 'Quantico', sans-serif;
+    font-size: 2.5em;
+    padding: 10px 20px;
+    margin: 15px;
+    cursor: pointer;
+    border: 3px solid white;
+    border-radius: 10px;
+    background-color: transparent;
+    color: white;
+    transition: background-color 0.3s;
+}

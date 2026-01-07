@@ -15,5 +15,110 @@
         <button class="chapter-button" onclick="startChapter(2)">Chapter 2: The Journey</button>
         <button class="chapter-button" onclick="startChapter(3)">Chapter 3: The Challenge</button>
     </div>
+
+    <!--background-->
+    <canvas id="rain"></canvas>
+    <div class="overlay"></div>
+    
+    <script>
+    (function(){
+    const canvas = document.getElementById("rain");
+    const ctx = canvas.getContext("2d");
+
+    let width, height, dpr;
+    let drops = [];
+
+    let DROP_COUNT = 500;
+    let WIND = -0.4;
+    let SPEED_MULT = 1;
+
+    function resize() {
+        dpr = window.devicePixelRatio || 1;
+        width = innerWidth;
+        height = innerHeight;
+
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    class Drop {
+        constructor(z = Math.random()) {
+            this.z = z;
+            this.reset();
+        }
+
+        reset() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * -height;
+            this.length = 10 + this.z * 25;
+            this.speed = (4 + this.z * 10) * SPEED_MULT;
+            this.opacity = 0.2 + this.z * 0.6;
+        }
+
+        update() {
+            this.x += WIND * this.z;
+            this.y += this.speed;
+            if (this.y > height) {
+                this.reset();
+                this.y = 0;
+            }
+        }
+
+        draw() {
+            ctx.strokeStyle = `rgba(180,200,255,${this.opacity})`;
+            ctx.lineWidth = 1 + this.z;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + WIND * 8, this.y + this.length);
+            ctx.stroke();
+        }
+    }
+
+    function init() {
+        drops = [];
+        for (let i = 0; i < DROP_COUNT; i++) {
+            drops.push(new Drop());
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        for (const d of drops) {
+            d.update();
+            d.draw();
+        }
+        requestAnimationFrame(animate);
+    }
+
+    // Optional controls from the original effect are only wired if present
+    const toggle = document.getElementById("toggle");
+    const controls = document.getElementById("controls");
+
+    if (toggle && controls) {
+        toggle.onclick = () => {
+            toggle.classList.toggle("open");
+            controls.classList.toggle("open");
+        };
+
+        const amount = document.getElementById("amount");
+        const wind = document.getElementById("wind");
+        const speed = document.getElementById("speed");
+
+        if (amount) amount.oninput = e => { DROP_COUNT = +e.target.value; init(); };
+        if (wind) wind.oninput = e => { WIND = +e.target.value; };
+        if (speed) speed.oninput = e => { SPEED_MULT = +e.target.value; drops.forEach(d => d.reset()); };
+    }
+
+    window.onresize = () => { resize(); init(); };
+
+    resize();
+    init();
+    animate();
+    })();
+    </script>
+    <!--background-->
 </body>
 </html>

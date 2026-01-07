@@ -10,8 +10,18 @@
 </head>
 <body>
     <h1 id="menu-title">Project ASAR</h1>
-    <button class="button" id="story-mode-button">Story Mode</button>
+    <button onclick="goToStoryMode()" class="button" id="story-mode-button">Story Mode</button>
 </body>
+        <!--scripts for menu buttons-->
+        <script>
+            function goToStoryMode() {
+                window.location.href = "../story-mode/chapters/chapters.html";
+            }
+        </script>
+        <!--scripts for menu buttons-->
+
+        <!--menu background-->
+
         <canvas id="rain"></canvas>
         <div class="overlay"></div>
         
