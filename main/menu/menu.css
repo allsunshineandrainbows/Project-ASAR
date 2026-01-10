@@ -58,9 +58,18 @@ body {
     cursor: pointer;
     border: 3px solid white;
     border-radius: 10px;
-    background-color: gray;
+    background-color: transparent;
     color: white;
     position: relative;
     left: 100px;
     bottom: 50px;
+}
+
+#versionLabel {
+    font-family: 'Quantico', sans-serif;
+    font-size: 1.5em;
+    color: white;
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
 }
