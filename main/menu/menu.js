@@ -18,3 +18,44 @@ fetch("https://allsunshineandrainbows.github.io/Project-ASAR/version.json", {
   .catch(() => {
     // offline or blocked → ignore
   });
+
+  async function checkForUpdate() {
+  try {
+    const response = await fetch(
+      "https://allsunshineandrainbows.github.io/Project-ASAR/version.json",
+      { cache: "no-store" } // prevents browser caching
+    );
+
+    if (!response.ok) return;
+
+    const onlineData = await response.json();
+    const onlineVersion = onlineData.version;
+
+    if (onlineVersion !== LOCAL_VERSION) {
+      showUpdateNotice(onlineVersion);
+    }
+  } catch (err) {
+    // Offline or blocked — silently ignore
+  }
+}
+
+checkForUpdate();
+
+function showUpdateNotice(onlineVersion) {
+  const banner = document.createElement("div");
+
+  banner.textContent = `New version available: v${onlineVersion}`;
+  banner.style.position = "fixed";
+  banner.style.bottom = "12px";
+  banner.style.left = "50%";
+  banner.style.transform = "translateX(-50%)";
+  banner.style.background = "#111";
+  banner.style.color = "#fff";
+  banner.style.padding = "8px 14px";
+  banner.style.borderRadius = "8px";
+  banner.style.fontFamily = "sans-serif";
+  banner.style.fontSize = "14px";
+  banner.style.zIndex = "9999";
+
+  document.body.appendChild(banner);
+}
