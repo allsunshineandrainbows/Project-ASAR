@@ -5,7 +5,8 @@
 
 <p>Playable using:</p>
 <ul> 
-    <li><a href="https://allsunshineandrainbows.github.io/Project-ASAR/main/menu/menu.html" target="_blank">Click Here (Online Github Page Site)</a></li>
+    <li><a href="https://project-asar.web.app" target="_blank">Click Here (Online Firebase Site)</a></li>
+    <li><a href="https://project-asar.firebaseapp.com" target="_blank"> Click Here (Alternative Online Firebase Site</a></li>
     <li><a href="https://github.com/allsunshineandrainbows/Project-ASAR/releases/latest" target="_blank">Click Here to Download for Offline(Official Latest Release)</a></li>
 </ul>
 
