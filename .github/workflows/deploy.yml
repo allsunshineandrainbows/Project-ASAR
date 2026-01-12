@@ -17,4 +17,3 @@
               firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' # Uses the secret you just created
               projectId: project-asar # Your Firebase project ID
               channelId: live # Deploy to your live site
-    ```
