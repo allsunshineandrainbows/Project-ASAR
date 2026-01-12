@@ -1,6 +1,6 @@
     {
       "hosting": {
-        "public": ".", // This tells Firebase that your game files are in the root directory
+        "public": ".",
         "ignore": [
           "firebase.json",
           "**/.*",
@@ -8,4 +8,3 @@
         ]
       }
     }
-    ```
