@@ -6,7 +6,7 @@ const BUILD_STAGE = "prototype";
 document.getElementById("versionLabel").textContent =
   `v${LOCAL_VERSION} (${BUILD_STAGE})`;
 
-fetch("https://allsunshineandrainbows.github.io/Project-ASAR/version.json", {
+fetch("https://project-asar.web.app/version.json", {
   cache: "no-store"
 })
   .then(res => res.json())
@@ -22,7 +22,7 @@ fetch("https://allsunshineandrainbows.github.io/Project-ASAR/version.json", {
   async function checkForUpdate() {
   try {
     const response = await fetch(
-      "https://allsunshineandrainbows.github.io/Project-ASAR/version.json",
+      "https://project-asar.web.app/version.json",
       { cache: "no-store" } // prevents browser caching
     );
 
