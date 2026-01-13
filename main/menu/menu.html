@@ -14,6 +14,29 @@
     <h1 id="versionLabel"></h1>
     <script src="menu.js"></script>
     <button onclick="goToStoryMode()" class="button" id="story-mode-button">Story Mode</button>
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAMv09bDdv7AiP3XzbsJQ8TrYrTIJStSJ4",
+    authDomain: "project-asar.firebaseapp.com",
+    projectId: "project-asar",
+    storageBucket: "project-asar.firebasestorage.app",
+    messagingSenderId: "392198412298",
+    appId: "1:392198412298:web:da61bd52f3028d7288a7f3",
+    measurementId: "G-TFLFG0R06L"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
         <!--scripts for menu buttons-->
         <script>
