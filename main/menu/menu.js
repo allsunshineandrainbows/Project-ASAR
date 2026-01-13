@@ -1,6 +1,6 @@
 // TODO: bump version when prototype is playable
 
-const LOCAL_VERSION = "0.0.0";
+const LOCAL_VERSION = "0.1.0";
 const BUILD_STAGE = "prototype";
 
 document.getElementById("versionLabel").textContent =
