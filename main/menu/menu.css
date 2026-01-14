@@ -73,3 +73,12 @@ body {
     bottom: 0px;
     right: 20px;
 }
+
+#online-players-count {
+    font-family: 'Quantico', sans-serif;
+    font-size: 1.5em;
+    color: white;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
