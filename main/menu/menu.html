@@ -15,7 +15,22 @@
     <script type="module" src="menu.js"></script>
     <button onclick="goToStoryMode()" class="button" id="story-mode-button">Story Mode</button>
     <script type="module">
-  // ... (all your existing imports and firebaseConfig) ...
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+  // Import Realtime Database functions
+  import { getDatabase, ref, set, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAMv09bDdv7AiP3XzbsJQ8TrYrTIJStSJ4", // YOUR_API_KEY
+    authDomain: "project-asar.firebaseapp.com", // YOUR_PROJECT_ID.firebaseapp.com
+    projectId: "project-asar", // YOUR_PROJECT_ID
+    storageBucket: "project-asar.firebasestorage.app", // YOUR_PROJECT_ID.appspot.com
+    messagingSenderId: "392198412298", // YOUR_MESSAGING_SENDER_ID
+    appId: "1:392198412298:web:da61bd52f3028d7288a7f3", // YOUR_APP_ID
+    measurementId: "G-TFLFG0R06L" // YOUR_MEASUREMENT_ID
+  };
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -49,11 +64,6 @@
     console.log("DEBUG: Snapshot val():", snapshot.val()); // Get the raw value it holds
     // --- END DEBUG CONSOLE.LOGS ---
 
-    // Original line that caused the error:
-    // const onlinePlayersCount = snapshot.numChildren(); 
-
-    // Temporarily, let's use a fallback if numChildren doesn't work,
-    // to at least get a count and see if the rest updates.
     let onlinePlayersCount = 0;
     try {
         if (snapshot.exists()) {
@@ -82,7 +92,6 @@
   // --- End Realtime Database for Online Players ---
 
 </script>
-
 
 </body>
         <!--scripts for menu buttons-->
