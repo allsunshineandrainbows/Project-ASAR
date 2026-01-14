@@ -82,3 +82,16 @@ body {
     top: 20px;
     right: 20px;
 }
+
+#links-list {
+    font-family: 'Quantico', sans-serif;
+    color: white;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+}
