@@ -61,6 +61,8 @@
     const onlinePlayersCount = snapshot.numChildren(); // Count how many children (players) are in 'presence'
     const onlinePlayersElement = document.getElementById('online-players-count'); // Get the element to display the count
 
+    console.log("Attempting to update onlinePlayersElement:", onlinePlayersElement);
+
     if (onlinePlayersElement) {
       onlinePlayersElement.textContent = `Online Players: ${onlinePlayersCount}`;
     }
