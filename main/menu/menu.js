@@ -6,7 +6,8 @@ const BUILD_STAGE = "prototype";
 document.getElementById("versionLabel").textContent =
   `v${LOCAL_VERSION} (${BUILD_STAGE})`;
 
-fetch("https://project-asar.web.app/version.json", {
+// CHANGE 1: Use a relative path for version.json
+fetch("/version.json", {
   cache: "no-store"
 })
   .then(res => res.json())
@@ -21,8 +22,9 @@ fetch("https://project-asar.web.app/version.json", {
 
   async function checkForUpdate() {
   try {
+    // CHANGE 2: Use a relative path for version.json
     const response = await fetch(
-      "https://project-asar.web.app/version.json",
+      "/version.json",
       { cache: "no-store" } // prevents browser caching
     );
 
