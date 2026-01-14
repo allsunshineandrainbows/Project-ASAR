@@ -23,13 +23,13 @@
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyAMv09bDdv7AiP3XzbsJQ8TrYrTIJStSJ4", // YOUR_API_KEY
-    authDomain: "project-asar.firebaseapp.com", // YOUR_PROJECT_ID.firebaseapp.com
-    projectId: "project-asar", // YOUR_PROJECT_ID
-    storageBucket: "project-asar.firebasestorage.app", // YOUR_PROJECT_ID.appspot.com
-    messagingSenderId: "392198412298", // YOUR_MESSAGING_SENDER_ID
-    appId: "1:392198412298:web:da61bd52f3028d7288a7f3", // YOUR_APP_ID
-    measurementId: "G-TFLFG0R06L" // YOUR_MEASUREMENT_ID
+    apiKey: "AIzaSyAMv09bDdv7AiP3XzbsJQ8TrYrTIJStSJ4",
+    authDomain: "project-asar.firebaseapp.com",
+    projectId: "project-asar",
+    storageBucket: "project-asar.firebasestorage.app",
+    messagingSenderId: "392198412298",
+    appId: "1:392198412298:web:da61bd52f3028d7288a7f3",
+    measurementId: "G-TFLFG0R06L"
   };
 
   // Initialize Firebase
@@ -57,31 +57,14 @@
 
   // Listen for changes to the 'presence' node to count online players
   onValue(onlinePlayersRef, (snapshot) => {
-    // --- ADD THESE DEBUG CONSOLE.LOGS ---
-    console.log("DEBUG: Full snapshot object:", snapshot);
-    console.log("DEBUG: Snapshot type:", typeof snapshot);
-    console.log("DEBUG: Snapshot exists():", snapshot.exists()); // Check if it's even a DataSnapshot
-    console.log("DEBUG: Snapshot val():", snapshot.val()); // Get the raw value it holds
-    // --- END DEBUG CONSOLE.LOGS ---
-
     let onlinePlayersCount = 0;
-    try {
-        if (snapshot.exists()) {
-            onlinePlayersCount = snapshot.numChildren(); // Try the intended method first
-        }
-    } catch (e) {
-        console.error("Error calling snapshot.numChildren():", e);
-        // Fallback: If numChildren fails, count the keys of the value
-        const data = snapshot.val();
-        if (typeof data === 'object' && data !== null) {
-            onlinePlayersCount = Object.keys(data).length;
-            console.warn("Using Object.keys(snapshot.val()).length as a fallback for numChildren()");
-        }
+    const data = snapshot.val(); // Get the raw data object from the snapshot
+
+    if (data && typeof data === 'object') {
+      onlinePlayersCount = Object.keys(data).length; // Count the number of keys in the data object
     }
     
     const onlinePlayersElement = document.getElementById('online-players-count');
-
-    console.log("Attempting to update onlinePlayersElement:", onlinePlayersElement);
 
     if (onlinePlayersElement) {
       onlinePlayersElement.textContent = `Online Players: ${onlinePlayersCount}`;
