@@ -19,10 +19,13 @@
     <h1 id="chapters-title">Chapters</h1>
     <div id="chapters-list">
         <button class="chapter-button" onclick="startChapter(1)">Chapter 1: The Beginning</button>
-        <button class="chapter-button" onclick="startChapter(2)">Chapter 2: The Journey</button>
-        <button class="chapter-button" onclick="startChapter(3)">Chapter 3: The Challenge</button>
     </div>
 
+    <script>
+        function startChapter(chapter_number) {
+            window.location.href = `../chapters/chapter_${chapter_number}`
+        }
+    </script>
     <!--background-->
     <canvas id="rain"></canvas>
     <div class="overlay"></div>
