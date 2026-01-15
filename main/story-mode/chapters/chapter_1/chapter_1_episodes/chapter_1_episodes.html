@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Chapter 1 Episodes - Story Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="chapter_1_episodes.css">
+    <script src="chapter_1_episodes.js" defer></script>
+</head>
+<body>
+    <button onclick="goToChapters()" class="button" id="back-to-chapters-button"><svg xmlns="http://www.w3.org/2000/svg" height="24"px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg></button>
+    <script>
+        function goToChapters() {
+            window.location.href = "../../../chapters-menu/chapters.html";
+        }
+    </script>
+    <h1 id="episodes-title">Chapter 1: Episodes</h1>
+    <div id="episodes-list">
+        <button class="episode-button" onclick="startEpisode(1)">Episode 1: Introduction</button>
+    </div>
+
+    <script>
+        function startEpisode(episodeNumber) {
+            window.location.href = `../chapter_1_episode_${episodeNumber}/episode_${episodeNumber}.html`;
+        }
+    </script>
+
+    <!--background-->
+    <canvas id="rain"></canvas>
+    <div class="overlay"></div>
+    
+    <script>
+    (function(){
+    const canvas = document.getElementById("rain");
+    const ctx = canvas.getContext("2d");
+
+    let width, height, dpr;
+    let drops = [];
+
+    let DROP_COUNT = 500;
+    let WIND = -0.4;
+    let SPEED_MULT = 1;
+
+    function resize() {
+        dpr = window.devicePixelRatio || 1;
+        width = innerWidth;
+        height = innerHeight;
+
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    class Drop {
+        constructor(z = Math.random()) {
+            this.z = z;
+            this.reset();
+        }
+
+        reset() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * -height;
+            this.length = 10 + this.z * 25;
+            this.speed = (4 + this.z * 10) * SPEED_MULT;
+            this.opacity = 0.2 + this.z * 0.6;
+        }
+
+        update() {
+            this.x += WIND * this.z;
+            this.y += this.speed;
+            if (this.y > height) {
+                this.reset();
+                this.y = 0;
+            }
+        }
+
+        draw() {
+            ctx.strokeStyle = `rgba(180,200,255,${this.opacity})`;
+            ctx.lineWidth = 1 + this.z;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + WIND * 8, this.y + this.length);
+            ctx.stroke();
+        }
+    }
+
+    function init() {
+        drops = [];
+        for (let i = 0; i < DROP_COUNT; i++) {
+            drops.push(new Drop());
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        for (const d of drops) {
+            d.update();
+            d.draw();
+        }
+        requestAnimationFrame(animate);
+    }
+
+    // Optional controls from the original effect are only wired if present
+    const toggle = document.getElementById("toggle");
+    const controls = document.getElementById("controls");
+
+    if (toggle && controls) {
+        toggle.onclick = () => {
+            toggle.classList.toggle("open");
+            controls.classList.toggle("open");
+        };
+
+        const amount = document.getElementById("amount");
+        const wind = document.getElementById("wind");
+        const speed = document.getElementById("speed");
+
+        if (amount) amount.oninput = e => { DROP_COUNT = +e.target.value; init(); };
+        if (wind) wind.oninput = e => { WIND = +e.target.value; };
+        if (speed) speed.oninput = e => { SPEED_MULT = +e.target.value; drops.forEach(d => d.reset()); };
+    }
+
+    window.onresize = () => { resize(); init(); };
+
+    resize();
+    init();
+    animate();
+    })();
+    </script>
+    <!--background-->
+</html>
