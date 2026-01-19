@@ -1,0 +1,235 @@
+<!--bob easter egg-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Say Hello To Bob</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      background: #000;
+      border: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="500" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+ctx.textAlign = "center";
+
+/* =====================
+   🎬 INTRO STATE
+   ===================== */
+let mode = "intro";
+let introText = "";
+const fullText = "Say Hello To...";
+let textIndex = 0;
+
+let timer = 0;
+let fadeAlpha = 0;
+let phase = "type";
+// type → pause → fadeInBob → holdBob → fadeOutBob → start
+
+/* =====================
+   👤 BOB
+   ===================== */
+const player = {
+  name: "Bob",
+  x: 250,
+  y: 220,
+  speed: 4
+};
+
+const keys = {};
+let walkTime = 0;
+
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+/* =====================
+   🎩 DRAW BOB
+   ===================== */
+function drawBob(x, y, wobbleX, wobbleY, armSwing, tilt) {
+  const bob = Math.abs(Math.sin(walkTime)) * 4;
+
+  // Name
+  ctx.font = "bold 18px Arial";
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "#fff";
+  ctx.fillStyle = "#000";
+  ctx.strokeText(player.name, x, y - 115 + bob);
+  ctx.fillText(player.name, x, y - 115 + bob);
+
+  // Head
+  ctx.fillStyle = "#FFD1A9";
+  ctx.beginPath();
+  ctx.arc(x, y - 30 + bob, 15, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Hat
+  const hatX = x + wobbleX;
+  const hatY = y + wobbleY + bob - 30;
+
+  ctx.save();
+  ctx.translate(hatX, hatY);
+  ctx.rotate(tilt);
+
+  ctx.fillStyle = "#111";
+  ctx.fillRect(-22, -15, 44, 6);
+  ctx.fillRect(-14, -55, 28, 40);
+
+  ctx.fillStyle = "#c0392b";
+  ctx.fillRect(-14, -30, 28, 6);
+
+  ctx.restore();
+
+  // Body
+  ctx.fillStyle = "#3498db";
+  ctx.fillRect(x - 10, y - 15 + bob, 20, 40);
+
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#000";
+
+  // Arms
+  ctx.beginPath();
+  ctx.moveTo(x - 10, y + bob);
+  ctx.lineTo(x - 25 - armSwing, y + 20 + bob);
+  ctx.moveTo(x + 10, y + bob);
+  ctx.lineTo(x + 25 + armSwing, y + 20 + bob);
+  ctx.stroke();
+
+  // Legs (FIXED)
+  const legSwing = Math.sin(walkTime) * 6;
+  ctx.beginPath();
+  ctx.moveTo(x - 5, y + 25 + bob);
+  ctx.lineTo(x - 8 + legSwing, y + 45 + bob);
+  ctx.moveTo(x + 5, y + 25 + bob);
+  ctx.lineTo(x + 8 - legSwing, y + 45 + bob);
+  ctx.stroke();
+}
+
+/* =====================
+   🎬 INTRO DRAW
+   ===================== */
+function drawIntro() {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = "bold 28px Arial";
+  ctx.fillStyle = "#fff";
+
+  if (phase === "type") {
+    if (timer % 5 === 0 && textIndex < fullText.length) {
+      introText += fullText[textIndex++];
+    }
+    ctx.fillText(introText, canvas.width / 2, canvas.height / 2);
+
+    if (textIndex === fullText.length) {
+      timer = 0;
+      phase = "pause";
+    }
+  }
+
+  else if (phase === "pause") {
+    ctx.fillText(introText, canvas.width / 2, canvas.height / 2);
+    timer++;
+    if (timer > 150) { // 2.5 seconds
+      timer = 0;
+      introText = "";
+      phase = "fadeInBob";
+    }
+  }
+
+  else if (phase === "fadeInBob") {
+    fadeAlpha += 1 / 180; // 3 seconds fade in
+    ctx.globalAlpha = fadeAlpha;
+    ctx.fillText("Bob.", canvas.width / 2, canvas.height / 2);
+    ctx.globalAlpha = 1;
+
+    if (fadeAlpha >= 1) {
+      timer = 0;
+      phase = "holdBob";
+    }
+  }
+
+  else if (phase === "holdBob") {
+    ctx.fillText("Bob.", canvas.width / 2, canvas.height / 2);
+    timer++;
+    if (timer > 60) {
+      phase = "fadeOutBob";
+    }
+  }
+
+  else if (phase === "fadeOutBob") {
+    fadeAlpha -= 1 / 180;
+    ctx.globalAlpha = fadeAlpha;
+    ctx.fillText("Bob.", canvas.width / 2, canvas.height / 2);
+    ctx.globalAlpha = 1;
+
+    if (fadeAlpha <= 0) {
+      phase = "start";
+    }
+  }
+
+  else if (phase === "start") {
+    mode = "bob";
+    canvas.style.background = "#fff";
+  }
+
+  timer++;
+}
+
+/* =====================
+   🎮 UPDATE
+   ===================== */
+function update() {
+  if (mode !== "bob") return;
+
+  let moving = false;
+  if (keys["ArrowLeft"] || keys["a"]) { player.x -= player.speed; moving = true; }
+  if (keys["ArrowRight"] || keys["d"]) { player.x += player.speed; moving = true; }
+  if (keys["ArrowUp"] || keys["w"]) { player.y -= player.speed; moving = true; }
+  if (keys["ArrowDown"] || keys["s"]) { player.y += player.speed; moving = true; }
+
+  walkTime = moving ? walkTime + 0.18 : walkTime * 0.85;
+
+  player.x = Math.max(40, Math.min(canvas.width - 40, player.x));
+  player.y = Math.max(130, Math.min(canvas.height - 45, player.y));
+}
+
+/* =====================
+   🔁 LOOP
+   ===================== */
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (mode === "intro") {
+    drawIntro();
+  } else {
+    update();
+    const wobbleX = Math.sin(walkTime) * 5;
+    const wobbleY = Math.abs(Math.cos(walkTime)) * 4;
+    const armSwing = Math.sin(walkTime) * 8;
+    const tilt = Math.sin(walkTime) * 0.25;
+    drawBob(player.x, player.y, wobbleX, wobbleY, armSwing, tilt);
+  }
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>
