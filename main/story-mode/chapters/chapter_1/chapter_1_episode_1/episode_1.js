@@ -1,4 +1,4 @@
-var myGameArea = {
+/* var myGameArea = {
   canvas : document.createElement("canvas"),
   start : function() {
     this.canvas.width = 800;
@@ -48,4 +48,4 @@ function drawMaintenanceMessage() {
     ctx.textAlign = "center";
     ctx.fillText("Sorry but there is work being done here,", myGameArea.canvas.width / 2, myGameArea.canvas.height / 2 - 20);
     ctx.fillText("nothing to see", myGameArea.canvas.width / 2, myGameArea.canvas.height / 2 + 20);
-}
+} */
