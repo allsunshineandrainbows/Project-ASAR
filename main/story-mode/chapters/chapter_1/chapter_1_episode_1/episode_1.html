@@ -44,37 +44,63 @@
             <div id="fade-text"></div>
         </div>
 
-          <script>
-    const HOLD_TIME = 1500;   // how long screen stays fully black
-    const TEXT_SPEED = 60;   // ms per character
+          
+<script>
+  const overlay = document.getElementById("fade-overlay");
+  const fadeText = document.getElementById("fade-text");
 
-    const text = "Chapter 1: \nIntroduction";
+  const texts = [
+    "Chapter 1:",
+    "Intro",
+    "Now the adventure begins."
+  ];
 
-    const overlay = document.getElementById("fade-overlay");
-    const fadeText = document.getElementById("fade-text");
+  const typingSpeed = 40;        // ms per letter typing
+  const deletingSpeed = 40;      // ms per letter deleting
+  const pauseAfterTyping = 1000;  // pause after finishing a text
+  const pauseBeforeNext = 500;   // pause before next text
 
-    let index = 0;
+  let textIndex = 0;
 
-    function typeWriter() {
-      fadeText.textContent = text.slice(0, index);
+  function typeWriterLoop() {
+    const currentText = texts[textIndex];
+    let charIndex = 0;
 
-      if (index < text.length) {
-        index++;
-        setTimeout(typeWriter, TEXT_SPEED);
+    function type() {
+      if (charIndex <= currentText.length) {
+        fadeText.textContent = currentText.slice(0, charIndex);
+        charIndex++;
+        setTimeout(type, typingSpeed);
+      } else {
+        setTimeout(deleteText, pauseAfterTyping);
       }
     }
 
-    window.addEventListener("load", () => {
-      // start typing immediately
-      typeWriter();
+    function deleteText() {
+      if (charIndex >= 0) {
+        fadeText.textContent = currentText.slice(0, charIndex);
+        charIndex--;
+        setTimeout(deleteText, deletingSpeed);
+      } else {
+        // go to next text
+        textIndex++;
+        if (textIndex < texts.length) {
+          setTimeout(typeWriterLoop, pauseBeforeNext);
+        } else {
+          // all texts done, fade overlay out
+          overlay.classList.add("hidden");
+        }
+      }
+    }
 
-      // hold black, then fade out
-      setTimeout(() => {
-        overlay.classList.add("hidden");
-      }, HOLD_TIME);
-    });
-  </script>
-        
+    type();
+  }
+
+  window.addEventListener("load", () => {
+    typeWriterLoop(); // start typing immediately
+  });
+</script>
+
         <script>
         (function(){
         const canvas = document.getElementById("rain");
