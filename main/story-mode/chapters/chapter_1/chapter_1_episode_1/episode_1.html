@@ -159,7 +159,15 @@ overlay.addEventListener("transitionend", () => {
 
     // start typewriter
     typeWriterLoop();
+
+      // hide skip button automatically after overlay fades
+  overlay.addEventListener("transitionend", (e) => {
+    if (e.target === overlay && e.propertyName === "opacity") {
+      skipButton.disabled = true;
+      skipButton.style.display = "none";
+    }
   });
+});
 </script>
 
 
