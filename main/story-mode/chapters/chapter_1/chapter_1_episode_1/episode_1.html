@@ -131,6 +131,23 @@
     clearTimeout(typingTimeout);                 // stop current typing/deleting
     fadeText.textContent = texts[texts.length - 1]; // show final text immediately
     overlay.classList.add("hidden");             // fade overlay out
+    function skipIntro() {
+  clearTimeout(typingTimeout);
+  fadeText.textContent = texts[texts.length - 1];
+  
+  overlay.classList.add("hidden"); // start fade
+
+  // disable skip button immediately
+  skipButton.disabled = true;
+  skipButton.style.display = "none";
+}
+
+// optional: also make sure it can't be clicked if user waits
+overlay.addEventListener("transitionend", () => {
+  skipButton.disabled = true;
+  skipButton.style.display = "none";
+});
+
   }
 
   window.addEventListener("load", () => {
