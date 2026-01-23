@@ -8,6 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="chapter_1_episodes.css">
     <script src="chapter_1_episodes.js" defer></script>
+    <style>
+        #fade-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 9999;
+    }
+
+        #fade-overlay.active {
+        opacity: 1;
+     }
+</style>
+
 </head>
 <body>
     <button onclick="goToChapters()" class="button" id="back-to-chapters-button"><svg xmlns="http://www.w3.org/2000/svg" height="24"px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg></button>
@@ -18,8 +37,7 @@
     </script>
     <h1 id="episodes-title">Chapter 1: Episodes</h1>
     <div id="episodes-list">
-        <button class="episode-button">Coming Soon!</button>
-        <!--onclick="startEpisode(1)-->
+        <button onclick="startEpisode(1)" class="episode-button">Coming Soon!</button>
     </div>
 
     <script>
@@ -27,6 +45,23 @@
             window.location.href = `../chapter_1_episode_${episodeNumber}/episode_${episodeNumber}.html`;
         }
     </script>
+
+    <div id="fade-overlay"></div>
+
+    <script>
+    function startEpisode(episodeNumber) {
+    const overlay = document.getElementById("fade-overlay");
+
+    // activate fade
+    overlay.classList.add("active");
+
+    // wait for fade to finish, then redirect
+    setTimeout(() => {
+      window.location.href = `../chapter_1_episode_${episodeNumber}/episode_${episodeNumber}.html`;
+    }, 4000); // must match CSS transition time
+    }
+    </script>
+
 
     <!--background-->
     <canvas id="rain"></canvas>
