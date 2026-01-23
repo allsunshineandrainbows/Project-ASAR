@@ -4,14 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 1 - Episode 1</title>
-</head>
+    <style>
+    #fade-overlay {
+        position: fixed;
+        inset: 0;
+        background: black;
+        opacity: 1; /* 👈 starts fully black */
+        pointer-events: none;
+        transition: opacity 7s ease;
+        z-index: 9999;
+    }
 
-<!--onload="startEpisode1()"-->
+    #fade-overlay.hidden {
+        opacity: 0;
+    }
+    
+    #fade-text {
+  color: white;
+  font-family: monospace;
+  font-size: 24px;
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: pre-wrap;
+}
+
+</style>
+
+</head>
 
 <body style="background-color: black;">
     <canvas id="rain"></canvas>
     
         <div class="overlay"></div>
+
+        <div id="fade-overlay">
+            <div id="fade-text"></div>
+        </div>
+
+        <script>
+        window.addEventListener("load", () => {
+        const overlay = document.getElementById("fade-overlay");
+
+        // let browser paint first (important)
+        requestAnimationFrame(() => {
+          overlay.classList.add("hidden");
+        });
+      });
+    </script>
+
+    <script>
+  const FADE_DURATION = 4000;
+
+  function startEpisode(episodeNumber) {
+    const overlay = document.getElementById("fade-overlay");
+
+    overlay.classList.remove("hidden"); // fade to black
+
+    setTimeout(() => {
+      window.location.href =
+        `../chapter_1_episode_${episodeNumber}/episode_${episodeNumber}.html`;
+    }, FADE_DURATION);
+  }
+</script>
+
+<script>
+  const text = "Previously...\nThe world changed forever.";
+  const textSpeed = 60; // ms per character
+  let index = 0;
+
+  const overlay = document.getElementById("fade-overlay");
+  const fadeText = document.getElementById("fade-text");
+
+  function typeWriter() {
+    fadeText.textContent = text.slice(0, index);
+
+    if (index < text.length) {
+      index++;
+      setTimeout(typeWriter, textSpeed);
+    }
+  }
+
+  window.addEventListener("load", () => {
+    // start typing immediately
+    typeWriter();
+
+    // start fade-out after browser paints
+    requestAnimationFrame(() => {
+      overlay.classList.add("hidden");
+    });
+  });
+</script>
+
         
         <script>
         (function(){
