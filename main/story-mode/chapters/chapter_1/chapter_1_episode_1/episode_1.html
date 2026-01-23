@@ -10,7 +10,7 @@
         inset: 0;
         background: black;
         opacity: 1; /* 👈 starts fully black */
-        pointer-events: none;
+        pointer-events: auto;
         transition: opacity 7s ease;
         z-index: 9999;
     }
@@ -29,7 +29,35 @@
     top: 50%;
     left: 50%;
     text-align: center;
-}
+
+    }
+    
+    #skip-button {
+      display: block;           /* make it render so opacity works */
+      opacity: 0;               /* start transparent */
+      transition: opacity 1s ease; /* fade-in duration */
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 18px;
+      font-size: 16px;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10000;
+  }
+
+  #skip-button.show {
+      opacity: 1;
+  }
+
+
+    #skip-button:hover {
+      background: #666;
+      opacity: 1;
+    }
 
 </style>
 
@@ -42,53 +70,55 @@
 
         <div id="fade-overlay">
             <div id="fade-text"></div>
+            <button id="skip-button">Skip</button>
         </div>
 
           
 <script>
   const overlay = document.getElementById("fade-overlay");
   const fadeText = document.getElementById("fade-text");
+  const skipButton = document.getElementById("skip-button");
 
   const texts = [
     "Chapter 1:",
-    "Intro",
+    "Introduction",
     "Now the adventure begins."
   ];
 
-  const typingSpeed = 40;        // ms per letter typing
-  const deletingSpeed = 40;      // ms per letter deleting
-  const pauseAfterTyping = 1000;  // pause after finishing a text
-  const pauseBeforeNext = 500;   // pause before next text
+  const typingSpeed = 60;       // ms per letter typing
+  const deletingSpeed = 40;     // ms per letter deleting
+  const pauseAfterTyping = 800; // pause after finishing a text
+  const pauseBeforeNext = 500;  // pause before next text
 
   let textIndex = 0;
+  let charIndex = 0;
+  let typingTimeout;
 
   function typeWriterLoop() {
     const currentText = texts[textIndex];
-    let charIndex = 0;
 
     function type() {
-      if (charIndex <= currentText.length) {
-        fadeText.textContent = currentText.slice(0, charIndex);
+      fadeText.textContent = currentText.slice(0, charIndex);
+      if (charIndex < currentText.length) {
         charIndex++;
-        setTimeout(type, typingSpeed);
+        typingTimeout = setTimeout(type, typingSpeed);
       } else {
-        setTimeout(deleteText, pauseAfterTyping);
+        typingTimeout = setTimeout(deleteText, pauseAfterTyping);
       }
     }
 
     function deleteText() {
-      if (charIndex >= 0) {
-        fadeText.textContent = currentText.slice(0, charIndex);
+      fadeText.textContent = currentText.slice(0, charIndex);
+      if (charIndex > 0) {
         charIndex--;
-        setTimeout(deleteText, deletingSpeed);
+        typingTimeout = setTimeout(deleteText, deletingSpeed);
       } else {
-        // go to next text
         textIndex++;
         if (textIndex < texts.length) {
-          setTimeout(typeWriterLoop, pauseBeforeNext);
+          charIndex = 0;
+          typingTimeout = setTimeout(typeWriterLoop, pauseBeforeNext);
         } else {
-          // all texts done, fade overlay out
-          overlay.classList.add("hidden");
+          overlay.classList.add("hidden"); // fade overlay when done
         }
       }
     }
@@ -96,10 +126,25 @@
     type();
   }
 
+  // skip function
+  function skipIntro() {
+    clearTimeout(typingTimeout);                 // stop current typing/deleting
+    fadeText.textContent = texts[texts.length - 1]; // show final text immediately
+    overlay.classList.add("hidden");             // fade overlay out
+  }
+
   window.addEventListener("load", () => {
-    typeWriterLoop(); // start typing immediately
+    // fade-in skip button
+    skipButton.classList.add("show");
+
+    // attach click
+    skipButton.addEventListener("click", skipIntro);
+
+    // start typewriter
+    typeWriterLoop();
   });
 </script>
+
 
         <script>
         (function(){
