@@ -12,11 +12,11 @@ const canvas2 = document.getElementById('game-objects');
 const ctx2 = canvas2.getContext('2d');
 
 ctx2.fillStyle = '#d7d9d9';
-ctx2.fillRect(0, 350, 200, 50);
-ctx2.fillRect(300, 300, 200, 50);
-ctx2.fillRect(600, 250, 200, 50);
-ctx2.fillRect(900, 200, 200, 50);
-ctx2.fillRect(1200, 150, 150, 50);
+ctx2.fillRect(0, 400, 200, 50);
+ctx2.fillRect(300, 350, 200, 50);
+ctx2.fillRect(600, 300, 200, 50);
+ctx2.fillRect(900, 250, 200, 50);
+ctx2.fillRect(1200, 200, 150, 50);
 
 ctx2.fillStyle = '#00bfff';
 ctx2.fillRect(1300, 100, 50, 50); // Goal object
@@ -54,6 +54,17 @@ window.addEventListener('keyup', (e) => {
 
 // Update player position
 function updatePlayer() {
+  // Check goal collision
+  const goal = { x: 1300, y: 100, width: 50, height: 50 };
+  if (
+    player.x < goal.x + goal.width &&
+    player.x + player.width > goal.x &&
+    player.y < goal.y + goal.height &&
+    player.y + player.height > goal.y
+  ) {
+    window.location.href = '../../../bob.html';
+  }
+
   // Horizontal movement
   if (keys['ArrowLeft']) {
     player.velocityX = -player.speed;
@@ -89,24 +100,43 @@ function updatePlayer() {
 
   // Check collision with platforms
   const platforms = [
-    { x: 0, y: 350, width: 200, height: 50 },
-    { x: 300, y: 300, width: 200, height: 50 },
-    { x: 600, y: 250, width: 200, height: 50 },
-    { x: 900, y: 200, width: 200, height: 50 },
-    { x: 1200, y: 150, width: 150, height: 50 }
+    { x: 0, y: 400, width: 200, height: 50 },
+    { x: 300, y: 350, width: 200, height: 50 },
+    { x: 600, y: 300, width: 200, height: 50 },
+    { x: 900, y: 250, width: 200, height: 50 },
+    { x: 1200, y: 200, width: 150, height: 50 }
   ];
 
   platforms.forEach(platform => {
-    if (
-      player.velocityY > 0 &&
-      player.y + player.height >= platform.y &&
-      player.y + player.height <= platform.y + platform.height &&
-      player.x + player.width > platform.x &&
-      player.x < platform.x + platform.width
-    ) {
-      player.y = platform.y - player.height;
-      player.velocityY = 0;
-      player.isJumping = false;
+    const overlapLeft = player.x + player.width - platform.x;
+    const overlapRight = platform.x + platform.width - player.x;
+    const overlapTop = player.y + player.height - platform.y;
+    const overlapBottom = platform.y + platform.height - player.y;
+
+    // Only process if there's overlap on all axes
+    if (overlapLeft > 0 && overlapRight > 0 && overlapTop > 0 && overlapBottom > 0) {
+      // Find the side with the smallest overlap
+      const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+      // Top collision (landing on platform)
+      if (minOverlap === overlapTop && player.velocityY > 0) {
+        player.y = platform.y - player.height;
+        player.velocityY = 0;
+        player.isJumping = false;
+      }
+      // Bottom collision (hitting from below)
+      else if (minOverlap === overlapBottom && player.velocityY < 0) {
+        player.y = platform.y + platform.height;
+        player.velocityY = 0;
+      }
+      // Left collision (hitting from right)
+      else if (minOverlap === overlapLeft && player.velocityX > 0) {
+        player.x = platform.x - player.width;
+      }
+      // Right collision (hitting from left)
+      else if (minOverlap === overlapRight && player.velocityX < 0) {
+        player.x = platform.x + platform.width;
+      }
     }
   });
 }
