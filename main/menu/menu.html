@@ -24,6 +24,12 @@
     <script type="module" src="menu.js"></script>
     <p style="position: absolute; bottom: 10px; left: 10px; color: white;" id="maintennance-message">since there is nothing to do rn, here's a <a href="https://project-asar.web.app/bob.html">special dev-exclusive secret easter egg</a></p>
     <button onclick="goToStoryMode()" class="button" id="story-mode-button">Story Mode</button>
+    <button onclick="goToPlatformerMenu()" class="button" id="platformer-button">Platformer</button>
+    <script>
+        function goToPlatformerMenu() {
+            window.location.href = "../../platformer/platformer-menu/platformer-menu.html";
+        }
+    </script>
     <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";

@@ -50,7 +50,10 @@ body {
     background-color: rgb(71, 70, 70) !important;
 }
 
-#story-mode-button {
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-family: 'Quantico', sans-serif;
     font-size: 3em;
     padding: 10px 20px;

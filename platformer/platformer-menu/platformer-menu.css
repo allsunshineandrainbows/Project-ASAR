@@ -42,3 +42,10 @@
     color: white;
     transition: background-color 0.3s;
 }
+
+#back-to-menu-button {
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
