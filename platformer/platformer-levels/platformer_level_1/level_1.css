@@ -1,0 +1,31 @@
+canvas {
+    position: absolute;
+}
+
+#level-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: "Quantico", sans-serif;
+    font-size: 100px;
+    opacity: 0.5;
+    z-index: 2;
+}
+
+#true-background {
+    z-index: 0;
+}
+
+#game-background {
+    z-index: 1;
+}
+
+#game-objects {
+    z-index: 3;
+}
+
+#game-character {
+    z-index: 4;
+}
