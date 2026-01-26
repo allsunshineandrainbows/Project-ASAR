@@ -53,10 +53,7 @@ function drawRoundedRect(ctx, x, y, width, height, radius, fillColor, strokeColo
 function generateMountains(baseY, variance, step = 120) {
   const points = [];
   for (let x = 0; x <= WIDTH + step; x += step) {
-    points.push({
-      x,
-      y: baseY - Math.random() * variance
-    });
+    points.push({ x, y: baseY - Math.random() * variance });
   }
   return points;
 }
@@ -189,9 +186,35 @@ const player = {
   groundY: 500
 };
 
+// ==================
+// INPUT
+// ==================
 const keys = {};
+
+// --- Keyboard ---
 window.addEventListener('keydown', e => keys[e.key] = true);
 window.addEventListener('keyup', e => keys[e.key] = false);
+
+// --- Mobile / Touch / Pointer Buttons ---
+window.addEventListener("DOMContentLoaded", () => {
+  function setupButton(buttonId, keyName) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+
+    const pressStart = (e) => { e.preventDefault(); keys[keyName] = true; };
+    const pressEnd = (e) => { e.preventDefault(); keys[keyName] = false; };
+
+    btn.addEventListener("pointerdown", pressStart);
+    btn.addEventListener("pointerup", pressEnd);
+    btn.addEventListener("pointercancel", pressEnd);
+    btn.addEventListener("pointerout", pressEnd);
+    btn.addEventListener("pointerleave", pressEnd);
+  }
+
+  setupButton("left", "ArrowLeft");
+  setupButton("right", "ArrowRight");
+  setupButton("up", "ArrowUp");
+});
 
 // ==================
 // UPDATE PLAYER
@@ -217,7 +240,7 @@ function updatePlayer() {
         window.location.href = `../../platformer-levels/platformer_level_${level+1}/level_${level+1}.html`;
       }
     });
-    return; // Stop updating to prevent further redirects
+    return;
   }
 
   if (keys['ArrowLeft']) player.velocityX = -player.speed;
@@ -283,11 +306,9 @@ function drawPlayer() {
 function gameLoop() {
   ctx1.clearRect(0, 0, WIDTH, HEIGHT);
   drawBackground();
-
   drawObjects();
   updatePlayer();
   drawPlayer();
-
   requestAnimationFrame(gameLoop);
 }
 

@@ -1,7 +1,9 @@
+/* CANVASES */
 canvas {
     position: absolute;
 }
 
+/* LEVEL TITLE */
 #level-title {
     position: absolute;
     top: 50%;
@@ -14,22 +16,13 @@ canvas {
     z-index: 2;
 }
 
-#true-background {
-    z-index: 0;
-}
+/* Z-INDEX LAYERS */
+#true-background { z-index: 0; }
+#game-background { z-index: 1; }
+#game-objects { z-index: 3; }
+#game-character { z-index: 4; }
 
-#game-background {
-    z-index: 1;
-}
-
-#game-objects {
-    z-index: 3;
-}
-
-#game-character {
-    z-index: 4;
-}
-
+/* COMPLETION OVERLAY */
 #completion-overlay {
     position: absolute;
     top: 0;
@@ -65,4 +58,50 @@ button {
 
 button:hover {
     background: #0099cc;
+}
+
+/* MOBILE CONTROLS CONTAINER */
+#mobile-controls {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    z-index: 15;
+    pointer-events: none; /* only buttons respond */
+}
+
+/* LEFT/RIGHT BUTTONS */
+#mobile-controls-left {
+    display: flex;
+    gap: 20px;
+    pointer-events: auto;
+    margin-left: 20px;
+}
+
+/* JUMP BUTTON ON RIGHT */
+#mobile-controls-right {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    pointer-events: auto;
+}
+
+/* BUTTON STYLE */
+.control-btn {
+    font-size: 40px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(0,191,255,0.6);
+    color: white;
+    border: none;
+    outline: none;
+    user-select: none;
+    touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-btn:active {
+    background: rgba(0,191,255,0.9);
 }

@@ -9,14 +9,30 @@
 </head>
 <body id="true-background" style="background: rgb(34, 34, 34);">
     <h1 id="level-title">Level 2</h1>
+
+    <!-- CANVASES -->
     <canvas id="game-background" width="1350" height="600"></canvas>
     <canvas id="game-objects" width="1350" height="600"></canvas>
     <canvas id="game-character" width="1350" height="600"></canvas>
+
+    <!-- COMPLETION OVERLAY -->
     <div id="completion-overlay">
         <h2 id="completion-message"></h2>
         <button id="back-to-levels">Back to Levels</button>
         <button id="next-level">Next Level</button>
     </div>
+
+    <!-- MOBILE BUTTONS -->
+    <div id="mobile-controls">
+        <div id="mobile-controls-left">
+            <button id="left" class="control-btn">◀</button>
+            <button id="right" class="control-btn">▶</button>
+        </div>
+        <div id="mobile-controls-right">
+            <button id="up" class="control-btn">▲</button>
+        </div>
+    </div>
+
     <script src="level_2.js"></script>
 </body>
 </html>

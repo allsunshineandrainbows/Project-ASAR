@@ -66,3 +66,48 @@ button {
 button:hover {
     background: #0099cc;
 }
+
+#mobile-controls {
+    position: fixed;
+    bottom: 15px;
+    width: 100%;
+    pointer-events: none;
+    z-index: 20;
+    user-select: none;
+}
+
+#left-right {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+#jump {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+#mobile-controls button {
+    pointer-events: auto;
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 191, 255, 0.4); /* semi-transparent blue */
+    color: white;
+    margin: 0;
+    touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#mobile-controls button:active {
+    background: rgba(0, 191, 255, 0.7); /* brighter when pressed */
+    transform: scale(0.95); /* slight press effect */
+}
