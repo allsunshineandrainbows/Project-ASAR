@@ -1,39 +1,188 @@
-const canvas = document.getElementById('game-background');
-const ctx1 = canvas.getContext('2d');
+// ==================
+// CANVAS SETUP
+// ==================
+const bgCanvas = document.getElementById('game-background');
+const ctx1 = bgCanvas.getContext('2d');
 
-ctx1.fillStyle = '#ffffff';
-ctx1.fillRect(0, 500, 1350, 100);
-ctx1.fillStyle = '#a6b2b6';
-ctx1.fillRect(0, 0, 1350, 500);
+const objCanvas = document.getElementById('game-objects');
+const ctx2 = objCanvas.getContext('2d');
 
-// Game background ^^^
+const charCanvas = document.getElementById('game-character');
+const ctx3 = charCanvas.getContext('2d');
 
-const canvas2 = document.getElementById('game-objects');
-const ctx2 = canvas2.getContext('2d');
+const WIDTH = 1350;
+const HEIGHT = 600;
 
-ctx2.fillStyle = '#d7d9d9';
-ctx2.fillRect(0, 400, 200, 50);
-ctx2.fillRect(300, 350, 200, 50);
-ctx2.fillRect(600, 300, 200, 50);
-ctx2.fillRect(900, 250, 200, 50);
-ctx2.fillRect(1200, 200, 150, 50);
+// ==================
+// BACKGROUND STATE
+// ==================
+let fogOffset = 0;
+let mountainOffsetFar = 0;
+let mountainOffsetNear = 0;
+let pulseTime = 0;
 
-ctx2.fillStyle = '#00bfff';
-ctx2.fillRect(1300, 100, 50, 50); // Goal object
+// ==================
+// PRE-GENERATED MOUNTAINS
+// ==================
+function generateMountains(baseY, variance, step = 120) {
+  const points = [];
+  for (let x = 0; x <= WIDTH + step; x += step) {
+    points.push({
+      x,
+      y: baseY - Math.random() * variance
+    });
+  }
+  return points;
+}
 
-// Game objects ^^^
+const mountainsFar = generateMountains(360, 40);
+const mountainsNear = generateMountains(420, 70);
 
-const canvas3 = document.getElementById('game-character');
-const ctx3 = canvas3.getContext('2d');
+function drawMountainLayer(points, offset, color) {
+  ctx1.fillStyle = color;
+  ctx1.beginPath();
+  ctx1.moveTo(0, HEIGHT);
+  points.forEach(p => ctx1.lineTo(p.x - offset, p.y));
+  ctx1.lineTo(WIDTH, HEIGHT);
+  ctx1.closePath();
+  ctx1.fill();
+}
 
-// Player object
+// ==================
+// SURREAL GLOW ORBS
+// ==================
+const glowOrbs = Array.from({ length: 10 }, () => ({
+  x: Math.random() * WIDTH,
+  y: Math.random() * 350,
+  r: 20 + Math.random() * 30,
+  speed: 0.1 + Math.random() * 0.2,
+  alpha: 0.04 + Math.random() * 0.06
+}));
+
+// ==================
+// AMBIENT BACKGROUND
+// ==================
+function drawBackground() {
+  const gradient = ctx1.createLinearGradient(0, 0, 0, HEIGHT);
+  gradient.addColorStop(0, "#0b1320");
+  gradient.addColorStop(0.6, "#1b2a38");
+  gradient.addColorStop(1, "#2c3e50");
+
+  ctx1.fillStyle = gradient;
+  ctx1.fillRect(0, 0, WIDTH, HEIGHT);
+
+  drawMountainLayer(mountainsFar, mountainOffsetFar, "rgba(20,30,45,0.85)");
+  drawMountainLayer(mountainsNear, mountainOffsetNear, "rgba(15,20,30,0.95)");
+
+  glowOrbs.forEach(o => {
+    ctx1.beginPath();
+    ctx1.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+    ctx1.fillStyle = `rgba(180,220,255,${o.alpha})`;
+    ctx1.fill();
+
+    o.y += o.speed;
+    if (o.y - o.r > 420) {
+      o.y = -o.r;
+      o.x = Math.random() * WIDTH;
+    }
+  });
+
+  ctx1.fillStyle = "rgba(255,255,255,0.035)";
+  for (let i = 0; i < 7; i++) {
+    ctx1.beginPath();
+    ctx1.ellipse(
+      (i * 280 + fogOffset) % 1600 - 200,
+      360 + i * 18,
+      260,
+      55,
+      0,
+      0,
+      Math.PI * 2
+    );
+    ctx1.fill();
+  }
+
+  ctx1.fillStyle = "#151515";
+  ctx1.fillRect(0, 500, WIDTH, 100);
+
+  fogOffset += 0.12;
+  mountainOffsetFar = (mountainOffsetFar + 0.05) % 120;
+  mountainOffsetNear = (mountainOffsetNear + 0.12) % 120;
+}
+
+// ==================
+// HELPER: ROUNDED RECT
+// ==================
+function drawRoundedRect(ctx, x, y, width, height, radius, fillColor, strokeColor, strokeWidth) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+
+  if (strokeColor && strokeWidth) {
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeColor;
+    ctx.stroke();
+  }
+}
+
+// ==================
+// PLATFORMS (ROUNDED + PULSING BORDER)
+// ==================
+const platforms = [
+  { x: 0, y: 400, width: 200, height: 50 },
+  { x: 300, y: 350, width: 200, height: 50 },
+  { x: 600, y: 300, width: 200, height: 50 },
+  { x: 900, y: 250, width: 200, height: 50 },
+  { x: 1200, y: 200, width: 150, height: 50 }
+];
+
+function drawPlatforms() {
+  ctx2.clearRect(0, 0, WIDTH, HEIGHT);
+
+  pulseTime += 0.05;
+  const borderWidth = 1.5 + Math.sin(pulseTime) * 1; // subtle pulse
+  const borderAlpha = 0.3 + Math.sin(pulseTime) * 0.2; // 0.1 → 0.5
+
+  platforms.forEach(p => {
+    drawRoundedRect(
+      ctx2,
+      p.x,
+      p.y,
+      p.width,
+      p.height,
+      15, // radius for round corners
+      "#000000", // fill
+      `rgba(180,220,255,${borderAlpha})`, // pulsing border
+      borderWidth
+    );
+  });
+
+  // Goal
+  ctx2.fillStyle = '#00bfff';
+  ctx2.fillRect(1300, 100, 50, 50);
+}
+
+// ==================
+// PLAYER
+// ==================
 const player = {
-  x: 0,
+  x: 40,
   y: 0,
   width: 50,
   height: 50,
-  velocityY: 0,
   velocityX: 0,
+  velocityY: 0,
   speed: 5,
   jumpPower: 12,
   gravity: 0.5,
@@ -41,20 +190,14 @@ const player = {
   groundY: 500
 };
 
-// Input handling
 const keys = {};
+window.addEventListener('keydown', e => keys[e.key] = true);
+window.addEventListener('keyup', e => keys[e.key] = false);
 
-window.addEventListener('keydown', (e) => {
-  keys[e.key] = true;
-});
-
-window.addEventListener('keyup', (e) => {
-  keys[e.key] = false;
-});
-
-// Update player position
+// ==================
+// UPDATE PLAYER
+// ==================
 function updatePlayer() {
-  // Check goal collision
   const goal = { x: 1300, y: 100, width: 50, height: 50 };
   if (
     player.x < goal.x + goal.width &&
@@ -65,97 +208,75 @@ function updatePlayer() {
     window.location.href = '../../../bob.html';
   }
 
-  // Horizontal movement
-  if (keys['ArrowLeft']) {
-    player.velocityX = -player.speed;
-  } else if (keys['ArrowRight']) {
-    player.velocityX = player.speed;
-  } else {
-    player.velocityX = 0;
-  }
+  if (keys['ArrowLeft']) player.velocityX = -player.speed;
+  else if (keys['ArrowRight']) player.velocityX = player.speed;
+  else player.velocityX = 0;
 
-  // Apply horizontal velocity
   player.x += player.velocityX;
 
-  // Keep player in bounds horizontally
   if (player.x < 0) player.x = 0;
-  if (player.x + player.width > 1350) player.x = 1350 - player.width;
+  if (player.x + player.width > WIDTH) player.x = WIDTH - player.width;
 
-  // Apply gravity
   player.velocityY += player.gravity;
   player.y += player.velocityY;
 
-  // Jumping
   if (keys['ArrowUp'] && !player.isJumping) {
     player.velocityY = -player.jumpPower;
     player.isJumping = true;
   }
 
-  // Ground collision (only if moving down or stationary)
   if (player.y + player.height >= player.groundY && player.velocityY >= 0) {
     player.y = player.groundY - player.height;
     player.velocityY = 0;
     player.isJumping = false;
   }
 
-  // Check collision with platforms
-  const platforms = [
-    { x: 0, y: 400, width: 200, height: 50 },
-    { x: 300, y: 350, width: 200, height: 50 },
-    { x: 600, y: 300, width: 200, height: 50 },
-    { x: 900, y: 250, width: 200, height: 50 },
-    { x: 1200, y: 200, width: 150, height: 50 }
-  ];
+  platforms.forEach(p => {
+    const overlapLeft = player.x + player.width - p.x;
+    const overlapRight = p.x + p.width - player.x;
+    const overlapTop = player.y + player.height - p.y;
+    const overlapBottom = p.y + p.height - player.y;
 
-  platforms.forEach(platform => {
-    const overlapLeft = player.x + player.width - platform.x;
-    const overlapRight = platform.x + platform.width - player.x;
-    const overlapTop = player.y + player.height - platform.y;
-    const overlapBottom = platform.y + platform.height - player.y;
-
-    // Only process if there's overlap on all axes
     if (overlapLeft > 0 && overlapRight > 0 && overlapTop > 0 && overlapBottom > 0) {
-      // Find the side with the smallest overlap
       const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
 
-      // Top collision (landing on platform)
       if (minOverlap === overlapTop && player.velocityY > 0) {
-        player.y = platform.y - player.height;
+        player.y = p.y - player.height;
         player.velocityY = 0;
         player.isJumping = false;
-      }
-      // Bottom collision (hitting from below)
-      else if (minOverlap === overlapBottom && player.velocityY < 0) {
-        player.y = platform.y + platform.height;
+      } else if (minOverlap === overlapBottom && player.velocityY < 0) {
+        player.y = p.y + p.height;
         player.velocityY = 0;
-      }
-      // Left collision (hitting from right)
-      else if (minOverlap === overlapLeft && player.velocityX > 0) {
-        player.x = platform.x - player.width;
-      }
-      // Right collision (hitting from left)
-      else if (minOverlap === overlapRight && player.velocityX < 0) {
-        player.x = platform.x + platform.width;
+      } else if (minOverlap === overlapLeft && player.velocityX > 0) {
+        player.x = p.x - player.width;
+      } else if (minOverlap === overlapRight && player.velocityX < 0) {
+        player.x = p.x + p.width;
       }
     }
   });
 }
 
-// Draw player
+// ==================
+// DRAW PLAYER
+// ==================
 function drawPlayer() {
-  ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
+  ctx3.clearRect(0, 0, WIDTH, HEIGHT);
   ctx3.fillStyle = '#ffffff';
   ctx3.fillRect(player.x, player.y, player.width, player.height);
 }
 
-// Game loop
+// ==================
+// GAME LOOP
+// ==================
 function gameLoop() {
+  ctx1.clearRect(0, 0, WIDTH, HEIGHT);
+  drawBackground();
+
+  drawPlatforms();
   updatePlayer();
   drawPlayer();
+
   requestAnimationFrame(gameLoop);
 }
 
-// Start game loop
 gameLoop();
-
-// Game character ^^^
