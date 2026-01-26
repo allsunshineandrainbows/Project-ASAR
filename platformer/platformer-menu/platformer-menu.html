@@ -19,6 +19,7 @@
         <h1 class="menu-title">Platformer Levels</h1>
         <div class="menu-levels">
             <button class="menu-button" onclick="startLevel(1)">Level 1</button>
+            <button class="menu-button" onclick="startLevel(2)">Level 2</button>
         </div>
     </div>
 
@@ -27,6 +28,9 @@
         switch(level) {
             case 1:
                 window.location.href = "../platformer-levels/platformer_level_1/level_1.html";
+                break;
+            case 2:
+                window.location.href = "../platformer-levels/platformer_level_2/level_2.html";
                 break;
             default:
                 alert("Level not found!");

@@ -22,6 +22,32 @@ let mountainOffsetNear = 0;
 let pulseTime = 0;
 
 // ==================
+// DRAW ROUNDED RECTANGLE
+// ==================
+function drawRoundedRect(ctx, x, y, width, height, radius, fillColor, strokeColor, strokeWidth) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.arcTo(x + width, y, x + width, y + radius, radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+  ctx.lineTo(x + radius, y + height);
+  ctx.arcTo(x, y + height, x, y + height - radius, radius);
+  ctx.lineTo(x, y + radius);
+  ctx.arcTo(x, y, x + radius, y, radius);
+  ctx.closePath();
+
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+
+  if (strokeColor && strokeWidth) {
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = strokeColor;
+    ctx.stroke();
+  }
+}
+
+// ==================
 // PRE-GENERATED MOUNTAINS
 // ==================
 function generateMountains(baseY, variance, step = 120) {
@@ -111,33 +137,7 @@ function drawBackground() {
 }
 
 // ==================
-// HELPER: ROUNDED RECT
-// ==================
-function drawRoundedRect(ctx, x, y, width, height, radius, fillColor, strokeColor, strokeWidth) {
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-
-  ctx.fillStyle = fillColor;
-  ctx.fill();
-
-  if (strokeColor && strokeWidth) {
-    ctx.lineWidth = strokeWidth;
-    ctx.strokeStyle = strokeColor;
-    ctx.stroke();
-  }
-}
-
-// ==================
-// PLATFORMS (ROUNDED + PULSING BORDER)
+// PLATFORMS
 // ==================
 const platforms = [
   { x: 0, y: 400, width: 200, height: 50 },
@@ -147,12 +147,12 @@ const platforms = [
   { x: 1200, y: 200, width: 150, height: 50 }
 ];
 
-function drawPlatforms() {
+function drawObjects() {
   ctx2.clearRect(0, 0, WIDTH, HEIGHT);
 
   pulseTime += 0.05;
-  const borderWidth = 1.5 + Math.sin(pulseTime) * 1; // subtle pulse
-  const borderAlpha = 0.3 + Math.sin(pulseTime) * 0.2; // 0.1 → 0.5
+  const borderWidth = 1.5 + Math.sin(pulseTime) * 1;
+  const borderAlpha = 0.3 + Math.sin(pulseTime) * 0.2;
 
   platforms.forEach(p => {
     drawRoundedRect(
@@ -161,14 +161,13 @@ function drawPlatforms() {
       p.y,
       p.width,
       p.height,
-      15, // radius for round corners
-      "#000000", // fill
-      `rgba(180,220,255,${borderAlpha})`, // pulsing border
+      15,
+      "#000000",
+      `rgba(180,220,255,${borderAlpha})`,
       borderWidth
     );
   });
 
-  // Goal
   ctx2.fillStyle = '#00bfff';
   ctx2.fillRect(1300, 100, 50, 50);
 }
@@ -205,7 +204,16 @@ function updatePlayer() {
     player.y < goal.y + goal.height &&
     player.y + player.height > goal.y
   ) {
-    window.location.href = '../../../bob.html';
+    const level = parseInt(document.getElementById('level-title').textContent.split(' ')[1]);
+    document.getElementById('completion-message').textContent = `Level ${level} Complete!`;
+    document.getElementById('completion-overlay').style.display = 'flex';
+    document.getElementById('back-to-levels').addEventListener('click', () => {
+      window.location.href = '../../platformer-menu/platformer-menu.html';
+    });
+    document.getElementById('next-level').addEventListener('click', () => {
+      window.location.href = `../../platformer-levels/platformer_level_${level+1}/level_${level+1}.html`;
+    });
+    return; // Stop updating to prevent further redirects
   }
 
   if (keys['ArrowLeft']) player.velocityX = -player.speed;
@@ -272,7 +280,7 @@ function gameLoop() {
   ctx1.clearRect(0, 0, WIDTH, HEIGHT);
   drawBackground();
 
-  drawPlatforms();
+  drawObjects();
   updatePlayer();
   drawPlayer();
 
