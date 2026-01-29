@@ -1,31 +1,21 @@
+MIT License
+
 Copyright (c) 2026 allsunshineandrainbows
 
-Non-Commercial Redistribution License (Play & Free Distribution Allowed — No Selling)
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use and redistribute the Software, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-1) Permitted uses
-   - You may run and play the game for personal use.
-   - You may copy and redistribute the Software (source or compiled) free of charge, provided that such redistribution is not for a commercial purpose.
-   - You may modify the Software for your own personal, non-commercial use.
-
-2) Prohibited uses
-   - You may not sell, sublicense for a fee, or otherwise distribute the Software or any derivative works for direct or indirect commercial gain. This includes charging for downloads, charging for access to a hosted instance of the Software, bundling the Software in a product sold for money, or accepting money in exchange for copies of the Software.
-   - You may not remove, obscure, or alter copyright or license notices required by this repository or by third-party components included with the Software.
-
-3) Redistribution of modified versions
-   - If you redistribute modified versions of the Software, you must:
-     a) Include a prominent notice that you changed the files and your name and the date of changes;
-     b) Distribute the modified version only under the same non-commercial terms set out here;
-     c) Retain any third-party copyright and license notices for components included in the distribution.
-
-4) Third-party components
-   - This repository may include third-party components that are covered by their own licenses (for example: MIT, BSD, Apache). Those components remain subject to their original licenses. See THIRD_PARTY_LICENSES.txt for details.
-
-5) Disclaimer
-   - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. The copyright holder is not liable for any claim, damages or other liability arising from the use of the Software.
-
-6) Commercial licensing
-   - For permission to sell, sublicense, or otherwise commercially distribute the Software or to obtain a commercial license, contact: stanleyye67@gmail.com
-
-This license applies to files authored by the copyright holder above. It does not alter or remove obligations arising from third-party licenses contained in this repository.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
