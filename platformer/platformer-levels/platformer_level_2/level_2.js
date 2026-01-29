@@ -235,9 +235,9 @@ function updatePlayer() {
     });
     document.getElementById('next-level').addEventListener('click', () => {
       if (level === 2) {
-        window.location.href = '../../../bob.html';
+        //window.location.href = '../../../bob.html';
       } else {
-        window.location.href = `../../platformer-levels/platformer_level_${level+1}/level_${level+1}.html`;
+        //window.location.href = `../../platformer-levels/platformer_level_${level+1}/level_${level+1}.html`;
       }
     });
     return;
